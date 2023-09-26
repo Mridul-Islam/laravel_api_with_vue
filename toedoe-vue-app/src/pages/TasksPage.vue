@@ -8,7 +8,10 @@
                     <newTask @added="handleAddedTask" />
 
                     <!-- List of Incompleted tasks -->
-                    <Tasks :tasks="incompletedTasks" />
+                    <Tasks
+                        :tasks="incompletedTasks"
+                        @updated="handelUpdateTask"
+                    />
 
                     <!-- Show Toggle Button -->
                     <div class="text-center my-3" v-show="showToggleCompletedBtn">
@@ -33,7 +36,7 @@
 <script setup>
 
     import {computed, onMounted, ref} from "vue";
-    import {allTasks, createTask} from '../http/task-api';
+    import {allTasks, createTask, updateTask } from '../http/task-api';
     import Tasks from "../components/tasks/Tasks.vue";
     import newTask from "../components/tasks/NewTask.vue"
 
@@ -59,9 +62,20 @@
 
     const showCompletedTasks = ref(false)
 
+    // Create New Task
     const handleAddedTask = async(newTask) => {
         const { data: createdTask } = await createTask(newTask)
         tasks.value.unshift(createdTask.data)
+    }
+
+    // Update a Task
+    const handelUpdateTask = async(task) => {
+        const { data: updatedTask } =  await updateTask(task.id, {
+            name: task.name
+        })
+
+        const currentTask = tasks.value.find(item => item.id === task.id);
+        currentTask.name = updatedTask.data.name;
     }
 
 </script>

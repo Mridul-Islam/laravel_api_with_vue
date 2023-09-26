@@ -13,8 +13,10 @@
                     <input
                         class="editable-task"
                         type="text"
-                        @keyup.esc="isEdit = false"
+                        @keyup.esc="undo"
                         v-focus
+                        @keyup.enter="updateTask"
+                        v-model="editingTask"
                     />
                 </div>
                 <span v-else>{{task.name}}</span>
@@ -37,12 +39,29 @@ import TaskAction from "../tasks/TaskActions.vue";
         task: Object
     })
 
+    const emit = defineEmits(['updated'])
+
     const completedClass = computed(() => props.task.is_completed ? "completed" : "")
 
     const isEdit = ref(false)
+    const editingTask = ref(props.task.name);
 
     const vFocus = {
         mounted: (el) => el.focus()
+    }
+
+    const updateTask = event => {
+        const updatedTask = {
+            ...props.task,
+            name: event.target.value
+        }
+        isEdit.value = false
+        emit('updated', updatedTask)
+    }
+
+    const undo = () => {
+        isEdit.value = false
+        editingTask.value = props.task.name
     }
 
 </script>
