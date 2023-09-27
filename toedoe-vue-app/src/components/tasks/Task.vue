@@ -2,7 +2,13 @@
 
     <li class="list-group-item py-3">
         <div class="d-flex justify-content-start align-items-center">
-            <input class="form-check-input mt-0" :class="completedClass" type="checkbox" :checked="task.is_completed"/>
+            <input
+                class="form-check-input mt-0"
+                type="checkbox"
+                :class="completedClass"
+                :checked="task.is_completed"
+                @change="markTaskAsCompleted"
+            />
             <div
                 class="ms-2 flex-grow-1"
                 :class="completedClass"
@@ -39,7 +45,7 @@ import TaskAction from "../tasks/TaskActions.vue";
         task: Object
     })
 
-    const emit = defineEmits(['updated'])
+    const emit = defineEmits(['updated', 'completed'])
 
     const completedClass = computed(() => props.task.is_completed ? "completed" : "")
 
@@ -50,6 +56,7 @@ import TaskAction from "../tasks/TaskActions.vue";
         mounted: (el) => el.focus()
     }
 
+    // Update a Task
     const updateTask = event => {
         const updatedTask = {
             ...props.task,
@@ -62,6 +69,15 @@ import TaskAction from "../tasks/TaskActions.vue";
     const undo = () => {
         isEdit.value = false
         editingTask.value = props.task.name
+    }
+
+    // Change Task Status
+    const markTaskAsCompleted = event => {
+        const updatedTask = {
+            ...props.task,
+            is_completed: !props.task.is_completed
+        }
+        emit('completed', updatedTask)
     }
 
 </script>

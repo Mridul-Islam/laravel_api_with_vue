@@ -11,6 +11,7 @@
                     <Tasks
                         :tasks="incompletedTasks"
                         @updated="handelUpdateTask"
+                        @completed="handleCompletedTask"
                     />
 
                     <!-- Show Toggle Button -->
@@ -22,7 +23,12 @@
                     </div>
 
                     <!-- List of Completed tasks -->
-                    <Tasks :tasks="completedTasks" :show="completedTasksIsVisible && showCompletedTasks"/>
+                    <Tasks
+                        :tasks="completedTasks"
+                        :show="completedTasksIsVisible && showCompletedTasks"
+                        @updated="handelUpdateTask"
+                        @completed="handleCompletedTask"
+                    />
 
                 </div>
             </div>
@@ -36,7 +42,7 @@
 <script setup>
 
     import {computed, onMounted, ref} from "vue";
-    import {allTasks, createTask, updateTask } from '../http/task-api';
+    import {allTasks, createTask, updateTask, completeTask } from '../http/task-api';
     import Tasks from "../components/tasks/Tasks.vue";
     import newTask from "../components/tasks/NewTask.vue"
 
@@ -76,6 +82,16 @@
 
         const currentTask = tasks.value.find(item => item.id === task.id);
         currentTask.name = updatedTask.data.name;
+    }
+
+    // Change Task Status
+    const handleCompletedTask = async(task) => {
+        const { data: updatedTask } = await completeTask(task.id, {
+            is_completed: task.is_completed
+        })
+
+        const currentTask = tasks.value.find(item => item.id === task.id)
+        currentTask.is_completed = updatedTask.data.is_completed
     }
 
 </script>
