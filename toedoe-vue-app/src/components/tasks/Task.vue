@@ -30,7 +30,11 @@
         </div>
 
         <!-- Task Actions -->
-        <TaskAction @edit="isEdit = true" v-show="!isEdit"/>
+        <TaskAction
+            @edit="isEdit = true"
+            v-show="!isEdit"
+            @remove="removeTask"
+        />
     </li>
 
 </template>
@@ -45,7 +49,7 @@ import TaskAction from "../tasks/TaskActions.vue";
         task: Object
     })
 
-    const emit = defineEmits(['updated', 'completed'])
+    const emit = defineEmits(['updated', 'completed', 'removed'])
 
     const completedClass = computed(() => props.task.is_completed ? "completed" : "")
 
@@ -78,6 +82,13 @@ import TaskAction from "../tasks/TaskActions.vue";
             is_completed: !props.task.is_completed
         }
         emit('completed', updatedTask)
+    }
+
+    // Remove Task
+    const removeTask = () => {
+        if(confirm("Are You Sure?")){
+            emit('removed', props.task)
+        }
     }
 
 </script>
