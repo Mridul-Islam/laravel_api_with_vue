@@ -47,6 +47,9 @@
     import {allTasks, createTask, updateTask, completeTask, removeTask } from '../http/task-api';
     import Tasks from "../components/tasks/Tasks.vue";
     import newTask from "../components/tasks/NewTask.vue"
+    import { useTaskStore } from "../stores/task";
+
+    const store = useTaskStore()
 
     const tasks = ref([]);
 
