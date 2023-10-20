@@ -48,8 +48,18 @@
     import Tasks from "../components/tasks/Tasks.vue";
     import newTask from "../components/tasks/NewTask.vue"
     import { useTaskStore } from "../stores/task";
+    import { storeToRefs } from "pinia";
 
-    const store = useTaskStore()
+    const store = useTaskStore();
+
+    const {task} = storeToRefs(store);
+
+    // store.$patch({
+    //     task:{
+    //         name: "First Task updated using $patch",
+    //         is_completed: true
+    //     }
+    // })
 
     const tasks = ref([]);
 
@@ -57,6 +67,8 @@
         const {data} = await allTasks();
 
         tasks.value = data.data;
+
+        console.log(task.value);
     })
 
     const incompletedTasks = computed(() => tasks.value.filter(task => !task.is_completed));
