@@ -52,7 +52,7 @@
 
     const store = useTaskStore();
 
-    const {task} = storeToRefs(store);
+    const {completedTasks, incompletedTasks} = storeToRefs(store);
 
     // store.$patch({
     //     task:{
@@ -64,16 +64,11 @@
     const tasks = ref([]);
 
     onMounted(async() => {
-        const {data} = await allTasks();
 
-        tasks.value = data.data;
+        await store.fetchAllTasks();
 
-        console.log(task.value);
     })
 
-    const incompletedTasks = computed(() => tasks.value.filter(task => !task.is_completed));
-
-    const completedTasks = computed(() => tasks.value.filter(task => task.is_completed));
 
     const showToggleCompletedBtn = computed(
         () => incompletedTasks.value.length > 0 && completedTasks.value.length > 0
