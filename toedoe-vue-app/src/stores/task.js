@@ -1,31 +1,44 @@
 import{ defineStore } from 'pinia';
+import { computed, reactive, ref } from 'vue';
 import { allTasks } from "../http/task-api";
 
-export const useTaskStore = defineStore('taskStore', {
+const tmp = {
     state: () => ({
-        tasks: [],
-        task: {
-            id: 1,
-            name: "First task",
-            is_completed: false
-        }
+
     }),
     getters:{
-        completedTasks: (state) => state.tasks.filter(task => task.is_completed),
+        // completedTasks: (state) => state.tasks.filter(task => task.is_completed),
 
-        incompletedTasks(){
-            return this.tasks.filter(task => !task.is_completed)
-        },
+        // incompletedTasks(){
+        //     return this.tasks.filter(task => !task.is_completed)
+        // },
 
-        uncompletedCount(){
-            return this.uncompleted.length
-        }
+        // uncompletedCount(){
+        //     return this.uncompleted.length
+        // }
     },
     actions: {
-        async fetchAllTasks(){
-            const {data} = await allTasks();
+        // async fetchAllTasks(){
+        //     const {data} = await allTasks();
 
-            this.tasks = data.data;
-        }
+        //     this.tasks = data.data;
+        // }
+    }
+};
+
+export const useTaskStore = defineStore('taskStore', () => {
+    const tasks = ref([]);
+
+    const incompletedTasks = computed(() => tasks.value.filter(task => !task.is_completed))
+    const completedTasks = computed(() => tasks.value.filter(task => task.is_completed))
+
+    const fetchAllTasks =  async() => {
+        const {data} = await allTasks();
+
+        tasks.value = data.data;
+    }
+
+    return {
+        tasks, completedTasks, incompletedTasks, fetchAllTasks
     }
 });
